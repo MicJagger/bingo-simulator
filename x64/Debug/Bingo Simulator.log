@@ -1,0 +1,7 @@
+﻿  bingocard.h
+C:\Users\micha\source\repos\Bingo Simulator\bingocard.h(30,37): warning C4244: 'argument': conversion from '_Rep' to 'unsigned int', possible loss of data
+          with
+          [
+              _Rep=__int64
+          ]
+  Bingo Simulator.vcxproj -> C:\Users\micha\source\repos\Bingo Simulator\x64\Debug\Bingo Simulator.exe

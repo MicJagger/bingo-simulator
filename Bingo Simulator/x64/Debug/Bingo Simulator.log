@@ -1,0 +1,6 @@
+﻿  bingocard.cpp
+  bingocard.h
+  main.cpp
+  Generating Code...
+Bingo Simulator\x64\Debug\bingocard.obj : warning LNK4042: object specified more than once; extras ignored
+  Bingo Simulator.vcxproj -> C:\Users\micha\source\repos\Bingo Simulator\x64\Debug\Bingo Simulator.exe
