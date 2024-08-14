@@ -19,7 +19,15 @@ BingoCard::BingoCard(bool freeSpace, long long seed) {
     }
 }
 
+short BingoCard::PlayBingo(funcPtr winCheck) {
+
+}
+
 BingoCard::~BingoCard() {
+
+}
+
+bool CheckCrossout() {
 
 }
 
