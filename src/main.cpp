@@ -1,18 +1,21 @@
 #include <iostream>
+#include <thread>
 
 #include "bingocard.h"
 
 int userChoose();
 Results* bingoSelect();
-bool freeSpace();
+bool freeSpaceSelect();
 
 int main() {
     Results* results = bingoSelect();
-
+    bool freeSpace = freeSpaceSelect();
     
 
     return 0;
 }
+
+
 
 // ensure proper user input, return 0 else
 int userChoose() {
@@ -51,7 +54,7 @@ Results* bingoSelect() {
 }
 
 // true/false for free space
-bool freeSpace() {
+bool freeSpaceSelect() {
     int userChoice;
 
     while (true) {
