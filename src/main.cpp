@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "bingocard.h"
+#include "tests.cpp"
 
 void BingoThread(Results* results, std::atomic<bool>& running, unsigned long long seedStart);
 
@@ -13,6 +14,10 @@ Results* BingoSelect();
 bool FreeSpaceSelect();
 
 int main() {
+    bool runTests = false;
+    if (runTests) {
+
+    }
     Results* results = BingoSelect();
     bool freeSpace = FreeSpaceSelect();
     unsigned int threadCount = ThreadCount();
