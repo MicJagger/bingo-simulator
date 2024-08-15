@@ -26,5 +26,10 @@ class Results {
 public:
     Results(std::string typ);
     ~Results();
+
+    long long WinCount(short value);
+    long long Count();
+
     void Add(short value);
+    void AddMultiple(short value, long long count);
 };
