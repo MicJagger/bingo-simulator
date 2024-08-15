@@ -45,7 +45,19 @@ Results::Results(std::string typ) {
     cardCount = 0;
 }
 
+Results::Results() {
+    type = "";
+    for (int i = 0; i < 75; i++) {
+        wins[i] = 0;
+    }
+    cardCount = 0;
+}
+
 Results::~Results() {}
+
+std::string Results::Type() {
+    return type;
+}
 
 long long Results::WinCount(short value) {
     return wins[value - 1];

@@ -1,3 +1,7 @@
+#pragma once
+#ifndef _BINGOCARD_H
+#define _BINGOCARD_H
+
 #include <random>
 #include <string>
 
@@ -25,11 +29,15 @@ class Results {
     long long cardCount;
 public:
     Results(std::string typ);
+    Results();
     ~Results();
 
+    std::string Type();
     long long WinCount(short value);
     long long Count();
 
     void Add(short value);
     void AddMultiple(short value, long long count);
 };
+
+#endif
