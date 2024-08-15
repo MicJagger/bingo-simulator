@@ -1,5 +1,6 @@
 #include <atomic>
 #include <chrono>
+#include <iomanip>
 #include <iostream>
 #include <thread>
 #include <vector>
@@ -7,16 +8,19 @@
 #include "bingocard.h"
 #include "tests.cpp"
 
-void BingoThread(Results* results, std::atomic<bool>& running, unsigned long long seedStart);
+void BingoThreadCrossout(Results* results, std::atomic<bool>& running, 
+                         bool freeSpace, unsigned long long seedStart);
 
 int UserChoose();
 Results* BingoSelect();
 bool FreeSpaceSelect();
 
+void PrintResults(Results* results);
+
 int main() {
     bool runTests = false;
     if (runTests) {
-
+        
     }
     Results* results = BingoSelect();
     bool freeSpace = FreeSpaceSelect();
@@ -30,19 +34,34 @@ int main() {
     std::atomic<bool> running;
 
     std::string returnWait;
+    for (int i = 0; i < threadCount; i++) {
+        threadResults.push_back(new Results());
+    }
     // main loop
     while (true) {
         running = true;
         std::cout << "Running bingo simulations\n";
-        for (int i = 0; i < threadCount; i++) {
-            threadResults.push_back(new Results());
-            threads.push_back(std::thread(BingoThread, threadResults[i], running, index * i));
+        if (results->Type() == "Crossout") {
+            for (int i = 0; i < threadCount; i++) {
+                threads.push_back(std::thread(BingoThreadCrossout, 
+                threadResults[i], running, freeSpace, index * i + threadResults[i]->Count()));
+            }
         }
 
         std::cout << "Input to pause" << std::endl;
         std::cin >> returnWait;
         running = false;
 
+        for (int i = 0; i < threadCount; i++) {
+            threads[i].join();
+        }
+        threads.clear();
+        results->Clear();
+        for (int i = 0; i < threadCount; i++) {
+            for (int j = 0; j < 75; j++) {
+                results->AddMultiple(j, threadResults[i]->WinCount(j));
+            }
+        }
 
     }
     
@@ -51,8 +70,25 @@ int main() {
     return 0;
 }
 
-void BingoThread(Results* results, std::atomic<bool>& running, unsigned long long seedStart) {
+void BingoThreadCrossout(Results* results, std::atomic<bool>& running, 
+                         bool freeSpace, unsigned long long seedStart) {
+    while (running) {
+        BingoCard card = BingoCard(freeSpace, seedStart);
+        //short winValue = card.PlayBingo(winType);
 
+        seedStart++;
+    }
+}
+
+void PrintResults(Results* results) {
+	for (int i = 0; i < 75; i++) {
+        // how many times it won in that many moves (display i + 1)
+		std::cout << i + 1 << " calls happened ";
+		std::cout << std::setw(16) << std::right << results->WinCount(i);
+        // total chance 
+		std::cout << " times with a chance of ";
+		std::cout << std::setw(11) << std::right << 100 * results->WinChance(i) << "%" << '\n';
+	}
 }
 
 // ensure proper user input, return 0 else
@@ -87,7 +123,7 @@ Results* BingoSelect() {
 
     switch (userChoice) {
         case 1:
-
+            return new Results("Crossout");
     }
 }
 
@@ -133,4 +169,3 @@ unsigned int ThreadCount() {
 
     return userChoice;
 }
-

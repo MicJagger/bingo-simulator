@@ -21,18 +21,18 @@ BingoCard::BingoCard(bool freeSpace, long long seed) {
 
 BingoCard::~BingoCard() {}
 
-short BingoCard::PlayBingo(funcPtr winCheck) {
+short BingoCard::PlayBingoCrossout() {
 
-}
-
-// could probably be optimized, "slow"
-bool BingoCard::CheckCrossout() {
+    // sort of "slow" checker for crossout, maybe optimize later if possible
+    bool win = true;
     for (int i = 0; i < 25; i++) {
         if (!checks[i]) {
-            return false;
+            win = false;
+            break;
         }
     }
-    return true;
+    
+
 }
 
 // Results
@@ -55,24 +55,35 @@ Results::Results() {
 
 Results::~Results() {}
 
+void Results::Clear() {
+    for (int i = 0; i < 75; i++) {
+        wins[i] = 0;
+    }
+    cardCount = 0;
+}
+
 std::string Results::Type() {
     return type;
 }
 
 long long Results::WinCount(short value) {
-    return wins[value - 1];
+    return wins[value];
 }
 
 long long Results::Count() {
     return cardCount;
 }
 
+double Results::WinChance(short value) {
+
+}
+
 void Results::Add(short value) {
-    wins[value - 1]++;
+    wins[value]++;
     cardCount++;
 }
 
 void Results::AddMultiple(short value, long long count) {
-    wins[value - 1] += count;
+    wins[value] += count;
     cardCount += count;
 }

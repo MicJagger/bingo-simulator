@@ -5,8 +5,6 @@
 #include <random>
 #include <string>
 
-typedef bool(funcPtr)();
-
 // individual card, gets created and deleted
 
 class BingoCard {
@@ -16,9 +14,8 @@ class BingoCard {
 public:
     BingoCard(bool freeSpace, long long seed);
     ~BingoCard();
-    short PlayBingo(funcPtr winCheck);
-    // checks
-    bool CheckCrossout();
+    // play
+    short PlayBingoCrossout();
 };
 
 // results for compiling wins, spawned once per thread plus one overall
@@ -31,10 +28,12 @@ public:
     Results(std::string typ);
     Results();
     ~Results();
+    void Clear();
 
     std::string Type();
     long long WinCount(short value);
     long long Count();
+    double WinChance(short value);
 
     void Add(short value);
     void AddMultiple(short value, long long count);
