@@ -2,8 +2,12 @@
 #ifndef _BINGOCARD_H
 #define _BINGOCARD_H
 
+#include <algorithm>
+#include <iomanip>
+#include <iostream>
 #include <random>
 #include <string>
+#include <vector>
 
 // individual card, gets created and deleted
 

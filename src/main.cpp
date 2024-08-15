@@ -21,6 +21,7 @@ int main() {
     bool runTests = false;
     if (runTests) {
         
+        return 0;
     }
 
     Results* results = BingoSelect();
@@ -36,7 +37,8 @@ int main() {
     }
 
     // divides 2^64 by threadCount to get ~equally spaced starting values
-    unsigned long long index = round(((double)0x8000000000000000 / (double)threadCount) * 2);
+    //unsigned long long index = round(((double)0x8000000000000000 / (double)threadCount) * 2);
+    unsigned long long index = round(((double)0x80000000 / (double)threadCount) * 2);
 
     std::vector<std::thread> threads;
     std::vector<Results*> threadResults;
@@ -53,7 +55,7 @@ int main() {
         if (results->Type() == "Crossout") {
             for (int i = 0; i < threadCount; i++) {
                 threads.push_back(std::thread(BingoThreadCrossout, 
-                threadResults[i], ref(running), freeSpace, index * (long long)i + threadResults[i]->Count()));
+                threadResults[i], ref(running), freeSpace, index * (long long)i + threadResults[i]->Count() + 1));
             }
         }
 
@@ -120,7 +122,7 @@ void PrintResults(Results* results, short preDet) {
         for (int i = 0; i < value; i++) {
             aggregate += results->WinChance(i);
         }
-        std::cout << "Chance of Bingo in <=" << value << " moves: " << aggregate * 100 << "%" << std::endl;
+        std::cout << "Chance of Bingo in <= " << value << " moves: " << aggregate * 100 << "%" << std::endl;
     }
 }
 
