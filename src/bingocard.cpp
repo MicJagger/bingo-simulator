@@ -32,7 +32,7 @@ short BingoCard::PlayBingoCrossout() {
         }
     }
     
-
+    return 75;
 }
 
 // Results
@@ -75,7 +75,7 @@ long long Results::Count() {
 }
 
 double Results::WinChance(short value) {
-
+    return (double)wins[value] / (double)cardCount;
 }
 
 void Results::Add(short value) {
