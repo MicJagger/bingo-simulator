@@ -1,11 +1,16 @@
+#include <algorithm>
 #include <atomic>
 #include <chrono>
 #include <iomanip>
 #include <iostream>
+#include <random>
+#include <string>
 #include <thread>
 #include <vector>
 
 #include "bingocard.h"
+#include "highrandom.h"
+#include "results.h"
 #include "tests.cpp"
 
 void BingoThreadCrossout(Results* results, std::atomic<bool>& running, 
@@ -67,6 +72,7 @@ int main() {
             threads[i].join();
         }
         threads.clear();
+        
         results->Clear();
         for (int i = 0; i < threadCount; i++) {
             for (int j = 0; j < 75; j++) {
@@ -94,7 +100,8 @@ void BingoThreadCrossout(Results* results, std::atomic<bool>& running,
         BingoCard card = BingoCard(freeSpace, seedStart);
         //short winValue = card.PlayBingo(winType);
 
-        seedStart++;
+        //seedStart++;
+        seedStart *= 2;
     }
 }
 
