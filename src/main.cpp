@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <array>
 #include <atomic>
 #include <chrono>
 #include <iomanip>
@@ -16,7 +17,7 @@
 #include "tests.cpp"
 
 void BingoThreadCrossout(Results* results, std::atomic<bool>& running, bool freeSpace,
-                         unsigned long long* seedCard, unsigned long long* seedCalls);
+                         std::vector<unsigned int>& seeds, bool changeCall);
 void PrintResults(Results* results, short preDet);
 
 int UserChoose();
@@ -25,9 +26,6 @@ bool FreeSpaceSelect();
 unsigned int ThreadCount();
 
 int main() {
-
-    
-
     bool runTests = false;
     if (runTests) {
         
@@ -48,20 +46,29 @@ int main() {
 
     // divides 2^64 by threadCount to get ~equally spaced starting values
     //unsigned long long index = round(((double)0x8000000000000000 / (double)threadCount) * 2);
-    unsigned long long index = round(((double)0x80000000 / (double)threadCount) * 2);
 
-    std::vector<std::thread> threads;
-    std::vector<Results*> threadResults;
-    std::vector<unsigned long long> seedCards;
-    std::vector<unsigned long long> seedCalls;
-    std::atomic<bool> running;
-    std::string returnWait;
+    // divides 2^32 by threadcount to get ~equally spaced starting seeds
+    unsigned int index = round(((double)0x100000000 / (double)threadCount));
 
-    for (unsigned long long i = 0; i < threadCount; i++) {
+    std::vector<std::thread> threads; // function threads
+    std::vector<Results*> threadResults; // individual counters
+    std::atomic<bool> running; // keeps the threads running
+    std::string returnWait; // pause "button"
+
+    // will keep track of rng seeds in order to randomize bingo cards / calls
+    // I wasn't going to use vectors but after lots of issues with other data types, here we are
+    std::vector<std::vector<unsigned int>> seeds;
+    // [thread1:[calls, col1, col2, col3, col4, col5], thread2:[6], thread3:[6], ...]
+    // seeds will be incremented as +1, +3, +5, +7, +11, +13
+    // seeds start at 2^32 / threadCount * threadIndex (+ 1?), (equally spread)  -  eg 1, 2^31 + 1
+
+    for (unsigned int i = 0; i < threadCount; i++) {
         threadResults.push_back(new Results());
-        seedCards.push_back(index * i + 1);
-        seedCalls.push_back(index * i + 1);
+        unsigned int seedStart = index * i;
+        std::vector<unsigned int> seedStarts = {seedStart, seedStart, seedStart, seedStart, seedStart, seedStart};
+        seeds.push_back(seedStarts);
     }
+
     // main loop
     while (true) {
         running = true;
@@ -69,7 +76,7 @@ int main() {
         if (results->Type() == "Crossout") {
             for (int i = 0; i < threadCount; i++) {
                 threads.push_back(std::thread(BingoThreadCrossout, 
-                threadResults[i], ref(running), freeSpace, &(seedCards[i]), &(seedCalls[i])));
+                threadResults[i], ref(running), freeSpace, ref(seeds[i]), true));
             }
         }
 
@@ -104,13 +111,11 @@ int main() {
 }
 
 void BingoThreadCrossout(Results* results, std::atomic<bool>& running, bool freeSpace,
-                         unsigned long long* seedCards, unsigned long long* seedCalls) {
+                         std::vector<unsigned int>& seeds, bool changeCall) {
     while (running) {
-        //BingoCard card = BingoCard(freeSpace, seedStart);
-        //short winValue = card.PlayBingo(winType);
-
-        //seedStart++;
-        //seedStart *= 2;
+        BingoCard card = BingoCard();
+        card.Setup(freeSpace, seeds, changeCall);
+        
     }
 }
 

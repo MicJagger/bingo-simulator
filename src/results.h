@@ -3,6 +3,7 @@
 #define _RESULTS_H
 
 #include <algorithm>
+#include <array>
 #include <atomic>
 #include <chrono>
 #include <iomanip>

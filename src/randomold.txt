@@ -1,0 +1,37 @@
+This is a whole lot of old code I don't wanna delete as I may wanna switch back / use it later
+So instead I just copy it here and it is out in the world to embarass me
+
+
+// yes this is big, but i want it to be fast and im not 100% confident in g++
+// i am sorry to myself and whoever else looks at this in horror
+values[0]  = tempVals[0];
+values[1]  = tempVals[1];
+values[2]  = tempVals[2];
+values[3]  = tempVals[3];
+values[4]  = tempVals[4];
+
+values[5]  = tempVals[15];
+values[6]  = tempVals[16];
+values[7]  = tempVals[17];
+values[8]  = tempVals[18];
+values[9]  = tempVals[19];
+
+values[10] = tempVals[30];
+values[11] = tempVals[31];
+values[12] = tempVals[32];
+values[13] = tempVals[33];
+values[14] = tempVals[34];
+
+values[15] = tempVals[45];
+values[16] = tempVals[46];
+values[17] = tempVals[47];
+values[18] = tempVals[48];
+values[19] = tempVals[49];
+
+values[20] = tempVals[60];
+values[21] = tempVals[61];
+values[22] = tempVals[62];
+values[23] = tempVals[63];
+values[24] = tempVals[64];
+
+

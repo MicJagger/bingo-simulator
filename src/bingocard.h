@@ -3,6 +3,7 @@
 #define _BINGOCARD_H
 
 #include <algorithm>
+#include <array>
 #include <atomic>
 #include <chrono>
 #include <iomanip>
@@ -16,14 +17,16 @@
 
 #include "highrandom.h"
 
-// individual card, gets created and deleted
+// individual card
 class BingoCard {
     short values[25];
     bool checks[25];
     short callOrder[75];
 public:
-    BingoCard(bool freeSpace, long long seed);
+    BingoCard();
     ~BingoCard();
+    // setup
+    void Setup(bool freeSpace, std::vector<unsigned int>& seeds, bool changeCall);
     // play
     short PlayBingoCrossout();
 };
