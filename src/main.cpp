@@ -26,6 +26,12 @@ bool FreeSpaceSelect();
 unsigned int ThreadCount();
 
 int main() {
+
+    // if on windows for windows-based stuff such as time, does almost nothing currently
+    bool onWindows = true;
+    // display time info
+    bool timeData = true;
+
     bool runTests = false;
     if (runTests) {
         
@@ -59,8 +65,8 @@ int main() {
     // I wasn't going to use vectors but after lots of issues with other data types, here we are
     std::vector<std::vector<unsigned int>> seeds;
     // [thread1:[calls, col1, col2, col3, col4, col5], thread2:[6], thread3:[6], ...]
-    // seeds will be incremented as +1, +3, +5, +7, +11, +13
-    // seeds start at 2^32 / threadCount * threadIndex (+ 1?), (equally spread)  -  eg 1, 2^31 + 1
+    // seeds will be changed as different (prime?) numbers, such as +1, +3, +5, +7, +11, +13
+    // seeds start at (2^32 / threadCount * threadIndex (+ 1?)), (equally spread)  -  eg 1, 2^31 + 1
 
     for (unsigned int i = 0; i < threadCount; i++) {
         threadResults.push_back(new Results());
@@ -69,10 +75,14 @@ int main() {
         seeds.push_back(seedStarts);
     }
 
+    double totalTimeTaken = 0;
+
     // main loop
     while (true) {
         running = true;
         std::cout << "\nRunning bingo simulations\n";
+        // timer - WINDOWS-BASED, WILL UPDATE FOR UNIX MAYBE EVENTUALLY
+        auto start = std::chrono::high_resolution_clock::now();
         if (results->Type() == "Crossout") {
             for (int i = 0; i < threadCount; i++) {
                 threads.push_back(std::thread(BingoThreadCrossout, 
@@ -83,10 +93,15 @@ int main() {
         std::cout << "Input to pause" << std::endl;
         std::cin >> returnWait;
         running = false;
+        // timer - WINDOWS-BASED, WILL UPDATE FOR UNIX MAYBE EVENTUALLY
+        auto end = std::chrono::high_resolution_clock::now();
 
         for (int i = 0; i < threadCount; i++) {
             threads[i].join();
         }
+        auto duration = end - start;
+        auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(duration);
+        double milliTime = milliseconds.count();
         threads.clear();
         
         results->Clear();
@@ -97,6 +112,23 @@ int main() {
         }
 
         PrintResults(results, 45);
+        
+        if (onWindows && timeData) {
+            totalTimeTaken += milliTime;
+            double totalSeconds = totalTimeTaken / 1000;
+            double totalMinutes = totalSeconds / 60;
+            double totalHours = totalMinutes / 60;
+            double count = results->Count();
+            std::cout << "Total seconds: " << totalSeconds << " seconds\n";
+            std::cout << "Total minutes: " << totalMinutes << " minutes\n";
+            std::cout << "Total hours: "   << totalHours   << " hours\n";
+            std::cout << "Average cards per second: " << count / totalSeconds << " cards\n";
+            std::cout << "Average cards per minute: " << count / totalMinutes << " cards\n";
+            std::cout << "Average cards per hour: "   << count / totalHours   << " cards\n";
+            std::cout << "Average cards per second per thread: " << (count / totalSeconds) / threadCount << " cards\n";
+            std::cout << "Average cards per minute per thread: " << (count / totalMinutes) / threadCount << " cards\n";
+            std::cout << "Average cards per hour per thread: "   << (count / totalHours) / threadCount   << " cards\n";
+        }
 
         std::cout << "Input to continue, q to quit" << std::endl;
         std::cin >> returnWait;
@@ -115,7 +147,7 @@ void BingoThreadCrossout(Results* results, std::atomic<bool>& running, bool free
     while (running) {
         BingoCard card = BingoCard();
         card.Setup(freeSpace, seeds, changeCall);
-        
+        results->Add(card.PlayBingoCrossout());
     }
 }
 

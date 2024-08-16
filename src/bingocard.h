@@ -29,6 +29,8 @@ public:
     void Setup(bool freeSpace, std::vector<unsigned int>& seeds, bool changeCall);
     // play
     short PlayBingoCrossout();
+private: // helper function(s)
+    inline void Place(short value);
 };
 
 #endif
