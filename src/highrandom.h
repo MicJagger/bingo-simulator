@@ -10,10 +10,14 @@
 #include <random>
 #include <string>
 #include <thread>
+#include <tuple>
+#include <unordered_map>
 #include <vector>
 
-namespace rnd {
+// may be used later for higher random seeds
 
+namespace rnd {
+    
 };
 
 // old code

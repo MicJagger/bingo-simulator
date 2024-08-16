@@ -10,6 +10,8 @@
 #include <random>
 #include <string>
 #include <thread>
+#include <tuple>
+#include <unordered_map>
 #include <vector>
 
 // results for compiling wins, spawned once per thread plus one overall

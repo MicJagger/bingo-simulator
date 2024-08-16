@@ -10,6 +10,8 @@
 #include <random>
 #include <string>
 #include <thread>
+#include <tuple>
+#include <unordered_map>
 #include <vector>
 
 #include "highrandom.h"
