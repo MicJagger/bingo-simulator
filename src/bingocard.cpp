@@ -10,13 +10,12 @@ BingoCard::~BingoCard() {}
 
 void BingoCard::Setup(bool freeSpace, std::vector<unsigned int>& seeds, bool changeCall) {
     hits = 0;
+    if (freeSpace) {
+        hits = hits | (1 << 12);
+    }
     short tempVals[75]; // used for bingocard order
     if (changeCall) { // if changing callOrder, shuffle the call order + rest of setup
-        for (int i = 0; i < 25; i++) {
-            callOrder[i] = i + 1;
-            tempVals[i] = i + 1;
-        }
-        for (int i = 25; i < 75; i++) {
+        for (int i = 0; i < 75; i++) {
             callOrder[i] = i + 1;
             tempVals[i] = i + 1;
         }
@@ -24,10 +23,7 @@ void BingoCard::Setup(bool freeSpace, std::vector<unsigned int>& seeds, bool cha
         seeds[0]++;
     }
     else { // else just shuffle / reset the bingocard
-        for (int i = 0; i < 25; i++) {
-            tempVals[i] = i + 1;
-        }
-        for (int i = 25; i < 75; i++) {
+        for (int i = 0; i < 75; i++) {
             tempVals[i] = i + 1;
         }
     }
@@ -61,23 +57,27 @@ void BingoCard::Setup(bool freeSpace, std::vector<unsigned int>& seeds, bool cha
     seeds[5] += 7001;
     // just some random primes off https://en.wikipedia.org/wiki/List_of_prime_numbers
     // idk im not a mathematician im guessing and making sure these lists don't repeat
-
-    if (freeSpace) {
-        hits = hits | (1 << 12);
-    }
 }
 
 short BingoCard::PlayBingoCrossout() {
-    for (int i = 0; i < 24; i++) {
-        Place(callOrder[i]);
+    int index = 0;
+    for (index; index < 24; index++) {
+        Place(callOrder[index]);
     }
-    int caller = 24; // it increments to 24 before being called or returned
+    // increments to 24 before being called or returned
     while (true) {
         if (CheckCrossout()) {
-            return caller + 1;
+            return index - 1;
+            // if reached 75, return 74 to wins[74]++
+
+            // im not sure why doing index + something doesnt cause undefined
+            // if its extreme is causes crashing or clearly off data, but when it's
+            // say + 0, then it just causes the percents to be a bit higher at the top
+            // to be honest, i am COMPLETELY LOST on why that happens
+            // probably compiler issue / quirk idk
         }
-        Place(callOrder[caller]);
-        caller++;
+        Place(callOrder[index]);
+        index++;
     }
 }
 
