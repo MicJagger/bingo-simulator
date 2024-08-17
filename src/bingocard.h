@@ -9,7 +9,6 @@
 // individual card
 class BingoCard {
     short values[25];
-    //bool checks[25];
     short callOrder[75];
     int hits;
 public:

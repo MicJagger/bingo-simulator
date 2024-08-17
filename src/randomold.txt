@@ -47,11 +47,12 @@ inline void BingoCard::Place(short value) {
 }
 
 // sort of "slow" checker for crossout, maybe optimize later if possible
-win = true;
-for (int i = 0; i < 25; i++) {
-    if (!checks[i]) {
-        win = false;
-        break;
+inline bool BingoCard::CheckCrossout() {
+    bool win = true;
+    for (int i = 0; i < 25; i++) {
+        if (!checks[i]) {
+            return false;
+        }
     }
 }
 

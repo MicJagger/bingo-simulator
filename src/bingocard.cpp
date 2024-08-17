@@ -3,16 +3,16 @@
 // BingoCard
 
 BingoCard::BingoCard() {
-    int hits = 0x00000000;
+    
 }
 
 BingoCard::~BingoCard() {}
 
 void BingoCard::Setup(bool freeSpace, std::vector<unsigned int>& seeds, bool changeCall) {
+    hits = 0;
     short tempVals[75]; // used for bingocard order
     if (changeCall) { // if changing callOrder, shuffle the call order + rest of setup
         for (int i = 0; i < 25; i++) {
-            //checks[i] = false;
             callOrder[i] = i + 1;
             tempVals[i] = i + 1;
         }
@@ -25,7 +25,6 @@ void BingoCard::Setup(bool freeSpace, std::vector<unsigned int>& seeds, bool cha
     }
     else { // else just shuffle / reset the bingocard
         for (int i = 0; i < 25; i++) {
-            //checks[i] = false;
             tempVals[i] = i + 1;
         }
         for (int i = 25; i < 75; i++) {
@@ -39,21 +38,14 @@ void BingoCard::Setup(bool freeSpace, std::vector<unsigned int>& seeds, bool cha
     std::shuffle(&tempVals[30], &tempVals[45], std::default_random_engine(seeds[3]));
     std::shuffle(&tempVals[45], &tempVals[60], std::default_random_engine(seeds[4]));
     std::shuffle(&tempVals[60], &tempVals[75], std::default_random_engine(seeds[5]));
-    // extra shuffling optional (this is mainly here for testing)
-    if (false) {
-        std::shuffle(&tempVals[ 0], &tempVals[15], std::default_random_engine(seeds[1]));
-        std::shuffle(&tempVals[15], &tempVals[30], std::default_random_engine(seeds[2]));
-        std::shuffle(&tempVals[30], &tempVals[45], std::default_random_engine(seeds[3]));
-        std::shuffle(&tempVals[45], &tempVals[60], std::default_random_engine(seeds[4]));
-        std::shuffle(&tempVals[60], &tempVals[75], std::default_random_engine(seeds[5]));
-    }
     // transfer to card
     for (int i = 0; i < 25; i++) {
         values[i] = tempVals[3 * i];
     }
 
     /*
-    std::cout << seeds[0] - 1 << " " << seeds[1] << " " << seeds[2] << " " << seeds[3] << " " << seeds[4] << " " << seeds[5] << " "<< '\n';
+    std::cout << seeds[0] - 1 << " " << seeds[1] << " " << seeds[2] << " " 
+              << seeds[3]     << " " << seeds[4] << " " << seeds[5] << " "<< '\n';
     for (int i = 0; i < 75; i++) { std::cout << tempVals[i] << ' '; }
     std::cout << '\n';
     for (int i = 0; i < 25; i++) { std::cout << values[i] << ' '; }
@@ -71,7 +63,7 @@ void BingoCard::Setup(bool freeSpace, std::vector<unsigned int>& seeds, bool cha
     // idk im not a mathematician im guessing and making sure these lists don't repeat
 
     if (freeSpace) {
-        hits = hits || (1 << 12);
+        hits = hits | (1 << 12);
     }
 }
 
@@ -84,15 +76,15 @@ short BingoCard::PlayBingoCrossout() {
         if (CheckCrossout()) {
             return caller + 1;
         }
-        caller++;
         Place(callOrder[caller]);
+        caller++;
     }
 }
 
 inline void BingoCard::Place(short value) {
     for (int i = 0; i < 25; i++) {
         if (value == values[i]) { // set bit position to 1 if found
-            hits = hits || (1 << i);
+            hits = hits | (1 << i);
             return;
         }
     }
