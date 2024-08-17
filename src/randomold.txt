@@ -35,3 +35,27 @@ values[23] = tempVals[63];
 values[24] = tempVals[64];
 
 
+Older, slower place / check
+
+inline void BingoCard::Place(short value) {
+    for (int i = 0; i < 25; i++) {
+        if (value == values[i]) {
+            checks[i] = true;
+            return;
+        }
+    }
+}
+
+// sort of "slow" checker for crossout, maybe optimize later if possible
+win = true;
+for (int i = 0; i < 25; i++) {
+    if (!checks[i]) {
+        win = false;
+        break;
+    }
+}
+
+// if it breaks somehow this should go off
+// if (caller >= 75) { std::cout << "never won ???" << '\n'; return -1; }
+
+

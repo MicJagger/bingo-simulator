@@ -3,7 +3,7 @@
 // BingoCard
 
 BingoCard::BingoCard() {
-    
+    int hits = 0x00000000;
 }
 
 BingoCard::~BingoCard() {}
@@ -12,7 +12,7 @@ void BingoCard::Setup(bool freeSpace, std::vector<unsigned int>& seeds, bool cha
     short tempVals[75]; // used for bingocard order
     if (changeCall) { // if changing callOrder, shuffle the call order + rest of setup
         for (int i = 0; i < 25; i++) {
-            checks[i] = false;
+            //checks[i] = false;
             callOrder[i] = i + 1;
             tempVals[i] = i + 1;
         }
@@ -25,7 +25,7 @@ void BingoCard::Setup(bool freeSpace, std::vector<unsigned int>& seeds, bool cha
     }
     else { // else just shuffle / reset the bingocard
         for (int i = 0; i < 25; i++) {
-            checks[i] = false;
+            //checks[i] = false;
             tempVals[i] = i + 1;
         }
         for (int i = 25; i < 75; i++) {
@@ -71,7 +71,7 @@ void BingoCard::Setup(bool freeSpace, std::vector<unsigned int>& seeds, bool cha
     // idk im not a mathematician im guessing and making sure these lists don't repeat
 
     if (freeSpace) {
-        checks[12] = true;
+        hits = hits || (1 << 12);
     }
 }
 
@@ -79,38 +79,28 @@ short BingoCard::PlayBingoCrossout() {
     for (int i = 0; i < 24; i++) {
         Place(callOrder[i]);
     }
-    int caller = 23; // it increments to 24 before being called or returned
-    bool win;
+    int caller = 24; // it increments to 24 before being called or returned
     while (true) {
-        // sort of "slow" checker for crossout, maybe optimize later if possible
-        win = true;
-        for (int i = 0; i < 25; i++) {
-            if (!checks[i]) {
-                win = false;
-                break;
-            }
+        if (CheckCrossout()) {
+            return caller + 1;
         }
         caller++;
-        // if all were true, return index (+1), which is number of calls
-        if (win) {
-            return caller;
-        }
-
-        // if it breaks somehow this should go off
-        if (caller >= 75) {
-            std::cout << "never won ???" << '\n';
-            return -1;
-        }
-        
-        Place(callOrder[caller]);        
+        Place(callOrder[caller]);
     }
 }
 
 inline void BingoCard::Place(short value) {
     for (int i = 0; i < 25; i++) {
-        if (value == values[i]) {
-            checks[i] = true;
+        if (value == values[i]) { // set bit position to 1 if found
+            hits = hits || (1 << i);
             return;
         }
     }
+}
+
+inline bool BingoCard::CheckCrossout() {
+    if (hits == 0x01FFFFFF) { // last 25 bits are ones
+        return true;
+    }
+    return false;
 }

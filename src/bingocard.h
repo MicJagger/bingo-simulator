@@ -2,26 +2,16 @@
 #ifndef _BINGOCARD_H
 #define _BINGOCARD_H
 
-#include <algorithm>
-#include <array>
-#include <atomic>
-#include <chrono>
-#include <iomanip>
-#include <iostream>
-#include <random>
-#include <string>
-#include <thread>
-#include <tuple>
-#include <unordered_map>
-#include <vector>
+#include "stdincludes.h"
 
 #include "highrandom.h"
 
 // individual card
 class BingoCard {
     short values[25];
-    bool checks[25];
+    //bool checks[25];
     short callOrder[75];
+    int hits;
 public:
     BingoCard();
     ~BingoCard();
@@ -31,6 +21,7 @@ public:
     short PlayBingoCrossout();
 private: // helper function(s)
     inline void Place(short value);
+    inline bool CheckCrossout();
 };
 
 #endif

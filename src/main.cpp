@@ -1,15 +1,4 @@
-#include <algorithm>
-#include <array>
-#include <atomic>
-#include <chrono>
-#include <iomanip>
-#include <iostream>
-#include <random>
-#include <string>
-#include <thread>
-#include <tuple>
-#include <unordered_map>
-#include <vector>
+#include "stdincludes.h"
 
 #include "bingocard.h"
 #include "highrandom.h"
@@ -19,6 +8,9 @@
 void BingoThreadCrossout(Results* results, std::atomic<bool>& running, bool freeSpace,
                          std::vector<unsigned int>& seeds, bool changeCall);
 void PrintResults(Results* results, short preDet);
+
+void ImportCSV();
+void ExportCSV();
 
 int UserChoose();
 Results* BingoSelect();
@@ -43,11 +35,21 @@ int main() {
         delete results;
         return 0;
     }
+
     bool freeSpace = FreeSpaceSelect();
+
     unsigned int threadCount = ThreadCount();
     if (threadCount == -1) {
         delete results;
         return 0;
+    }
+
+    std::cout << "Would you like to input from input.csv?\n"
+              << "1. Yes\n"
+              << "!= 1. No" << std::endl;
+    int input = UserChoose();
+    if (input == 1) {
+
     }
 
     // divides 2^64 by threadCount to get ~equally spaced starting values
@@ -121,19 +123,32 @@ int main() {
             double count = results->Count();
             std::cout << "Total seconds: " << totalSeconds << " seconds\n";
             std::cout << "Total minutes: " << totalMinutes << " minutes\n";
-            std::cout << "Total hours: "   << totalHours   << " hours\n";
+            std::cout << "Total hours:   " << totalHours   << " hours\n";
             std::cout << "Average cards per second: " << count / totalSeconds << " cards\n";
             std::cout << "Average cards per minute: " << count / totalMinutes << " cards\n";
-            std::cout << "Average cards per hour: "   << count / totalHours   << " cards\n";
+            std::cout << "Average cards per hour:   "   << count / totalHours   << " cards\n";
             std::cout << "Average cards per second per thread: " << (count / totalSeconds) / threadCount << " cards\n";
             std::cout << "Average cards per minute per thread: " << (count / totalMinutes) / threadCount << " cards\n";
-            std::cout << "Average cards per hour per thread: "   << (count / totalHours) / threadCount   << " cards\n";
+            std::cout << "Average cards per hour per thread:   " << (count / totalHours) / threadCount   << " cards\n";
         }
 
-        std::cout << "Input to continue, q to quit" << std::endl;
-        std::cin >> returnWait;
-        if (returnWait == "q") {
+        int choice;
+        while (true) {
+            std::cout << "Input 0 to continue, -1 to quit, "
+                      << "-2 to output, or other to change thread count" << std::endl;
+            choice = UserChoose();
+            if (choice == -2) {
+                
+            }
+            else {
+                break;
+            }
+        }
+        if (choice == -1) {
             break;
+        }
+        else if (choice >= 1) {
+            threadCount = choice;
         }
     }
     for (int i = 0; i < threadCount; i++) {
@@ -142,6 +157,9 @@ int main() {
     return 0;
 }
 
+// Function Definitions
+
+// Play Crossout Bingo
 void BingoThreadCrossout(Results* results, std::atomic<bool>& running, bool freeSpace,
                          std::vector<unsigned int>& seeds, bool changeCall) {
     while (running) {
@@ -151,6 +169,7 @@ void BingoThreadCrossout(Results* results, std::atomic<bool>& running, bool free
     }
 }
 
+// Output results
 void PrintResults(Results* results, short preDet) {
     std::cout << '\n';
 	for (int i = 0; i < 75; i++) {
@@ -178,6 +197,16 @@ void PrintResults(Results* results, short preDet) {
         }
         std::cout << "Chance of Bingo in <= " << value << " moves: " << aggregate * 100 << "%" << std::endl;
     }
+}
+
+// Import from import.csv
+void ImportCSV() {
+
+}
+
+// Export to export.csv
+void ExportCSV() {
+
 }
 
 // ensure proper user input, return 0 else

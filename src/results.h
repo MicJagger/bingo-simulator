@@ -2,18 +2,7 @@
 #ifndef _RESULTS_H
 #define _RESULTS_H
 
-#include <algorithm>
-#include <array>
-#include <atomic>
-#include <chrono>
-#include <iomanip>
-#include <iostream>
-#include <random>
-#include <string>
-#include <thread>
-#include <tuple>
-#include <unordered_map>
-#include <vector>
+#include "stdincludes.h"
 
 // results for compiling wins, spawned once per thread plus one overall
 class Results {
