@@ -3,9 +3,9 @@ main.exe
 main.ilk
 main.obj
 main.pdb
+program.exe
+src/randomtempbackup.txt
 vc140.pdb
 .vscode/launch.json
 .vscode/settings.json
 .vscode/tasks.json
-
-src/randomtempbackup.txt
