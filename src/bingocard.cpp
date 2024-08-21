@@ -86,7 +86,6 @@ short BingoCard::PlayBingo() {
     for (index; index < 4; index++) {
         Place(callOrder[index]);
     }
-    // increments to 24 before being called or returned
     while (true) {
         if (CheckBingo()) {
             return index - 1;
@@ -129,21 +128,27 @@ inline bool BingoCard::CheckBingo() {
 
     // check rows (most likely)
     for (int i = 0; i < 5; i++) {
-        if (hits & (checkRow << i) == (checkRow << i)) {
+        if ((hits & (checkRow << i)) == (checkRow << i)) {
+            //std::cout << hits << '\n' << (checkRow << i) << '\n' 
+            //          << (hits & (checkRow << i)) << '\n' << '\n';
             return true;
         }
     }
     // check columns
     for (int i = 0; i < 25; i += 5) {
-        if (hits & (checkColumn << i) == (checkColumn << i)) {
+        if ((hits & (checkColumn << i)) == (checkColumn << i)) {
+            //std::cout << hits << '\n' << (checkColumn << i) << '\n' 
+            //            << (hits & (checkColumn << i)) << '\n' << '\n';
             return true;
         }
     }
     // check diags
-    if (hits & checkDiagTlBr == checkDiagTlBr) {
+    if ((hits & checkDiagTlBr) == checkDiagTlBr) {
+        //std::cout << hits << '\n' << (checkDiagTlBr) << '\n' << (hits & checkDiagTlBr) << '\n' << '\n';
         return true;
     }
-    if (hits & checkDiagBlTr == checkDiagBlTr) {
+    if ((hits & checkDiagBlTr) == checkDiagBlTr) {
+        //std::cout << hits << '\n' << (checkDiagBlTr) << '\n' << (hits & checkDiagBlTr) << '\n' << '\n';
         return true;
     }
     return false;

@@ -179,11 +179,17 @@ void PrintResults(Results* results, short preDet, int threadCount, double& total
         if (i < 9) {
             std::cout << ' '; // make them even
         }
+
+
+        // TODO : print out aggregate probability next to the values
 		std::cout << i + 1 << " calls happened ";
 		std::cout << std::setw(16) << std::right << results->WinCount(i);
         // total chance 
 		std::cout << " times with a chance of ";
-		std::cout << std::setw(11) << std::right << results->WinChance(i) * 100 << "%" << '\n';
+		std::cout << std::setw(11) << std::right << results->WinChance(i) * 100 << "%";
+        
+        // TODO
+        std::cout << '\n';
 	}
     std::cout << "Total Games: " << results->Count() << '\n';
     std::cout << "Calculations done using: " << threadCount << " threads" << '\n';
