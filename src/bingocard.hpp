@@ -1,10 +1,10 @@
 #pragma once
-#ifndef _BINGOCARD_H
-#define _BINGOCARD_H
+#ifndef _BINGOCARD_HPP
+#define _BINGOCARD_HPP
 
-#include "stdincludes.h"
+#include "stdincludes.hpp"
 
-#include "highrandom.h"
+#include "highrandom.hpp"
 
 // individual card
 class BingoCard {

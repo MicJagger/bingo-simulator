@@ -1,4 +1,4 @@
-#include "bingocard.h"
+#include "bingocard.hpp"
 
 // BingoCard
 

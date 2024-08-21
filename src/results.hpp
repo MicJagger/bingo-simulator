@@ -1,8 +1,8 @@
 #pragma once
-#ifndef _RESULTS_H
-#define _RESULTS_H
+#ifndef _RESULTS_HPP
+#define _RESULTS_HPP
 
-#include "stdincludes.h"
+#include "stdincludes.hpp"
 
 // results for compiling wins, spawned once per thread plus one overall
 class Results {

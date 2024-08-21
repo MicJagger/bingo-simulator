@@ -1,4 +1,4 @@
-#include "results.h"
+#include "results.hpp"
 
 Results::Results(std::string typ) {
     type = typ;

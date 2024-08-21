@@ -1,8 +1,8 @@
-#include "stdincludes.h"
+#include "stdincludes.hpp"
 
-#include "bingocard.h"
-#include "highrandom.h"
-#include "results.h"
+#include "bingocard.hpp"
+#include "highrandom.hpp"
+#include "results.hpp"
 #include "tests.cpp"
 
 void BingoThreadCrossout(Results* results, std::atomic<bool>& running, bool freeSpace,

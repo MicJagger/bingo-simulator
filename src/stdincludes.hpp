@@ -1,6 +1,6 @@
 #pragma once
-#ifndef _STDINCLUDES_H
-#define _STDINCLUDES_H
+#ifndef _STDINCLUDES_HPP
+#define _STDINCLUDES_HPP
 
 #include <algorithm>
 #include <atomic>

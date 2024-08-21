@@ -1,8 +1,8 @@
 #pragma once
-#ifndef _HIGHRANDOM_H
-#define _HIGHRANDOM_H
+#ifndef _HIGHRANDOM_HPP
+#define _HIGHRANDOM_HPP
 
-#include "stdincludes.h"
+#include "stdincludes.hpp"
 
 // may be used later for higher random seeds or some other better method
 
