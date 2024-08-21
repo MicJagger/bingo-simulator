@@ -81,6 +81,23 @@ short BingoCard::PlayBingoCrossout() {
     }
 }
 
+short BingoCard::PlayBingo() {
+    int index = 0;
+    for (index; index < 4; index++) {
+        Place(callOrder[index]);
+    }
+    // increments to 24 before being called or returned
+    while (true) {
+        if (CheckBingo()) {
+            return index - 1;
+        }
+        Place(callOrder[index]);
+        index++;
+    }
+}
+
+// Private Helper Functions
+
 inline void BingoCard::Place(short value) {
     for (int i = 0; i < 25; i++) {
         if (value == values[i]) { // set bit position to 1 if found
@@ -92,6 +109,41 @@ inline void BingoCard::Place(short value) {
 
 inline bool BingoCard::CheckCrossout() {
     if (hits == 0x01FFFFFF) { // last 25 bits are ones
+        return true;
+    }
+    return false;
+}
+
+inline bool BingoCard::CheckBingo() {
+    // 0000  000|0  0001 | 0000  1|000  01|00  001|0  0001 
+    const int checkRow = 0x108421;
+
+    //                                         000|1  1111
+    const int checkColumn = 0x1F;
+
+    // 0000  000|1  0000 | 0100  0|001  00|00  010|0  0001 
+    const int checkDiagTlBr = 0x01041041;
+
+    // 0000  000|0  0001 | 0001  0|001  00|01  000|1  0000 
+    const int checkDiagBlTr = 0x00111110;
+
+    // check rows (most likely)
+    for (int i = 0; i < 5; i++) {
+        if (hits & (checkRow << i) == (checkRow << i)) {
+            return true;
+        }
+    }
+    // check columns
+    for (int i = 0; i < 25; i += 5) {
+        if (hits & (checkColumn << i) == (checkColumn << i)) {
+            return true;
+        }
+    }
+    // check diags
+    if (hits & checkDiagTlBr == checkDiagTlBr) {
+        return true;
+    }
+    if (hits & checkDiagBlTr == checkDiagBlTr) {
         return true;
     }
     return false;

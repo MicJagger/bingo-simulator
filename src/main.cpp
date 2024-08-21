@@ -7,7 +7,9 @@
 
 void BingoThreadCrossout(Results* results, std::atomic<bool>& running, bool freeSpace,
                          std::vector<unsigned int>& seeds, bool changeCall);
-void PrintResults(Results* results, short preDet);
+void BingoThread        (Results* results, std::atomic<bool>& running, bool freeSpace,
+                         std::vector<unsigned int>& seeds, bool changeCall);
+void PrintResults(Results* results, short preDet, int threadCount, double& totalTime, double milli);
 
 void ImportCSV();
 void ExportCSV();
@@ -85,9 +87,16 @@ int main() {
         std::cout << "\nRunning bingo simulations\n";
         // timer - WINDOWS-BASED, WILL UPDATE FOR UNIX MAYBE EVENTUALLY
         auto start = std::chrono::high_resolution_clock::now();
+        
         if (results->Type() == "Crossout") {
             for (int i = 0; i < threadCount; i++) {
                 threads.push_back(std::thread(BingoThreadCrossout, 
+                threadResults[i], ref(running), freeSpace, ref(seeds[i]), true));
+            }
+        }
+        if (results->Type() == "Bingo") {
+                for (int i = 0; i < threadCount; i++) {
+                threads.push_back(std::thread(BingoThread, 
                 threadResults[i], ref(running), freeSpace, ref(seeds[i]), true));
             }
         }
@@ -113,24 +122,7 @@ int main() {
             }
         }
 
-        PrintResults(results, 45);
-        
-        if (onWindows && timeData) {
-            totalTimeTaken += milliTime;
-            double totalSeconds = totalTimeTaken / 1000;
-            double totalMinutes = totalSeconds / 60;
-            double totalHours = totalMinutes / 60;
-            double count = results->Count();
-            std::cout << "Total seconds: " << totalSeconds << " seconds\n";
-            std::cout << "Total minutes: " << totalMinutes << " minutes\n";
-            std::cout << "Total hours:   " << totalHours   << " hours\n";
-            std::cout << "Average cards per second: " << count / totalSeconds << " cards\n";
-            std::cout << "Average cards per minute: " << count / totalMinutes << " cards\n";
-            std::cout << "Average cards per hour:   "   << count / totalHours   << " cards\n";
-            std::cout << "Average cards per second per thread: " << (count / totalSeconds) / threadCount << " cards\n";
-            std::cout << "Average cards per minute per thread: " << (count / totalMinutes) / threadCount << " cards\n";
-            std::cout << "Average cards per hour per thread:   " << (count / totalHours) / threadCount   << " cards\n";
-        }
+        PrintResults(results, 45, threadCount, totalTimeTaken, milliTime);
 
         int choice;
         while (true) {
@@ -169,8 +161,18 @@ void BingoThreadCrossout(Results* results, std::atomic<bool>& running, bool free
     }
 }
 
+// Play Bingo
+void BingoThread        (Results* results, std::atomic<bool>& running, bool freeSpace,
+                         std::vector<unsigned int>& seeds, bool changeCall) {
+    while (running) {
+        BingoCard card = BingoCard();
+        card.Setup(freeSpace, seeds, changeCall);
+        results->Add(card.PlayBingo());
+    }
+}
+
 // Output results
-void PrintResults(Results* results, short preDet) {
+void PrintResults(Results* results, short preDet, int threadCount, double& totalTime, double milli) {
     std::cout << '\n';
 	for (int i = 0; i < 75; i++) {
         // how many times it won in that many moves (display i + 1)
@@ -183,7 +185,8 @@ void PrintResults(Results* results, short preDet) {
 		std::cout << " times with a chance of ";
 		std::cout << std::setw(11) << std::right << results->WinChance(i) * 100 << "%" << '\n';
 	}
-    std::cout << "Total Games: " << results->Count() << std::endl;
+    std::cout << "Total Games: " << results->Count() << '\n';
+    std::cout << "Calculations done using: " << threadCount << " threads" << '\n';
 
     if (preDet > 0) {
         int value = preDet;
@@ -197,6 +200,21 @@ void PrintResults(Results* results, short preDet) {
         }
         std::cout << "Chance of Bingo in <= " << value << " moves: " << aggregate * 100 << "%" << std::endl;
     }
+
+    totalTime += milli;
+    double totalSeconds = totalTime / 1000;
+    double totalMinutes = totalSeconds / 60;
+    double totalHours = totalMinutes / 60;
+    double count = results->Count();
+    std::cout << "Total seconds: " << totalSeconds << " seconds\n";
+    std::cout << "Total minutes: " << totalMinutes << " minutes\n";
+    std::cout << "Total hours:   " << totalHours   << " hours\n";
+    std::cout << "Average cards per second: " << count / totalSeconds << " cards\n";
+    std::cout << "Average cards per minute: " << count / totalMinutes << " cards\n";
+    std::cout << "Average cards per hour:   "   << count / totalHours   << " cards\n";
+    std::cout << "Average cards per second per thread: " << (count / totalSeconds) / threadCount << " cards\n";
+    std::cout << "Average cards per minute per thread: " << (count / totalMinutes) / threadCount << " cards\n";
+    std::cout << "Average cards per hour per thread:   " << (count / totalHours) / threadCount   << " cards\n";
 }
 
 // Import from import.csv
@@ -230,7 +248,7 @@ Results* BingoSelect() {
         std::cout 
         << "Select a Bingo Game Type: \n"
         << "1. Crossout (full card)\n"
-        << "2. tbd" //<< '\n'
+        << "2. Bingo (standard)" //<< '\n'
         //<< "-1. Quit"
         << std::endl;
 
@@ -245,6 +263,8 @@ Results* BingoSelect() {
             return new Results("quit");
         case 1:
             return new Results("Crossout");
+        case 2:
+            return new Results("Bingo");
     }
 
     return new Results("undefined");
