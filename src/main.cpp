@@ -14,7 +14,7 @@ void PrintResults(Results* results, short preDet, int threadCount, double& total
 void ImportCSV();
 void ExportCSV();
 
-int UserChoose();
+int UserChoose(int floor, int ceil);
 Results* BingoSelect();
 bool FreeSpaceSelect();
 unsigned int ThreadCount();
@@ -41,15 +41,15 @@ int main() {
     bool freeSpace = FreeSpaceSelect();
 
     unsigned int threadCount = ThreadCount();
-    if (threadCount == -1) {
+    if (threadCount == 0) {
         delete results;
         return 0;
     }
 
-    std::cout << "Would you like to input from input.csv?\n"
+    std::cout << "Would you like to input from values.csv?\n"
               << "1. Yes\n"
               << "2. No" << std::endl;
-    int input = UserChoose();
+    int input = UserChoose(1, 2);
     if (input == 1) {
 
     }
@@ -125,19 +125,14 @@ int main() {
         PrintResults(results, 45, threadCount, totalTimeTaken, milliTime);
 
         int choice;
-        while (true) {
-            std::cout << "Input 0 to continue, -1 to quit, "
-                      << "-2 to output, or other to change thread count" << std::endl;
-            choice = UserChoose();
-            if (choice == -2) {
-                
-            }
-            else {
-                break;
-            }
-        }
-        if (choice == -1) {
+        std::cout << "Input 0 to quit, -1 to continue, "
+                  << "-2 to output, or other to change thread count" << std::endl;
+        choice = UserChoose(-2, 256);
+        if (choice == 0) {
             break;
+        }
+        else if (choice == -2) {
+            
         }
         else if (choice >= 1) {
             threadCount = choice;
@@ -182,9 +177,10 @@ void PrintResults(Results* results, short preDet, int threadCount, double& total
         }
 		std::cout << i + 1 << "  calls happened  ";
 		std::cout << std::setw(16) << std::right << results->WinCount(i);
-        // total chance 
+        // chance 
 		std::cout << "  times with a chance of  ";
 		std::cout << std::setw(11) << std::right << results->WinChance(i) * 100 << "%";
+        // aggregate chance
         aggregateChance += results->WinChance(i);
         std::cout << "  and aggregate chance so far of  ";
         std::cout << std::setw(11) << std::right << aggregateChance * 100 << "%" << '\n';
@@ -208,54 +204,50 @@ void PrintResults(Results* results, short preDet, int threadCount, double& total
     std::cout << "Average cards per hour per thread:   " << (count / totalHours) / threadCount   << " cards\n";
 }
 
-// Import from import.csv
+// Import from values.csv
 void ImportCSV() {
 
 }
 
-// Export to export.csv
+// Export to values.csv
 void ExportCSV() {
 
 }
 
-// TODO: add constraints to userChoose
-
 // ensure proper user input, return 0 else
-int UserChoose() {
+int UserChoose(int floor, int ceil) {
     std::string userInput;
-    std::cin >> userInput;
+    while (true) {
+        std::cin >> userInput;
         try {
-            if (true) {
-                // constraints thing
+            if (stoi(userInput) >= floor && stoi(userInput) <= ceil) {
+                return stoi(userInput);
             }
-            return stoi(userInput);
+            else {
+                std::cout << "Error: Invalid Choice. Please Try Again." << std::endl;
+            }
         } 
         catch (...) {
             std::cout << "Error: Invalid Choice. Please Try Again." << std::endl;
             return 0;
         }
+    }
 }
 
 // select bingo game type
 Results* BingoSelect() {
     int userChoice;
 
-    while (true) {
-        std::cout 
-        << "Select a Bingo Game Type: \n"
-        << "1. Crossout (full card)\n"
-        << "2. Bingo (standard)" //<< '\n'
-        //<< "-1. Quit"
-        << std::endl;
-
-        userChoice = UserChoose();
-        if ((userChoice >= 1 && userChoice <= 2) || userChoice == -1) {
-            break;
-        }
-    }
+    std::cout 
+    << "Select a Bingo Game Type: \n"
+    << "0. Quit\n"
+    << "1. Crossout (full card)\n"
+    << "2. Bingo (standard)"
+    << std::endl;
+    userChoice = UserChoose(0, 2);
 
     switch (userChoice) {
-        case -1:
+        case 0:
             return new Results("quit");
         case 1:
             return new Results("Crossout");
@@ -270,18 +262,12 @@ Results* BingoSelect() {
 bool FreeSpaceSelect() {
     int userChoice;
 
-    while (true) {
-        std::cout 
-        << "Free Space? \n"
-        << "1. Yes\n"
-        << "2. No"
-        << std::endl;
-
-        userChoice = UserChoose();
-        if (userChoice >= 1 && userChoice <= 2) {
-            break;
-        }
-    }
+    std::cout 
+    << "Free Space? \n"
+    << "1. Yes\n"
+    << "2. No"
+    << std::endl;
+    userChoice = UserChoose(1, 2);
 
     if (userChoice == 1) {
         return true;
@@ -295,16 +281,10 @@ bool FreeSpaceSelect() {
 unsigned int ThreadCount() {
     int userChoice;
 
-    while (true) {
-        std::cout 
-        << "Input Thread Count: "
-        << std::endl;
-
-        userChoice = UserChoose();
-        if ((userChoice >= 1 && userChoice <= 256) || userChoice == -1) {
-            break;
-        }
-    }
+    std::cout 
+    << "Input Thread Count: "
+    << std::endl;
+    userChoice = UserChoose(0, 256);
 
     return userChoice;
 }
