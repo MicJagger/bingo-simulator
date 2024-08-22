@@ -11,8 +11,8 @@ void BingoThread        (Results* results, std::atomic<bool>& running, bool free
                          std::vector<unsigned int>& seeds, bool changeCall);
 void PrintResults(Results* results, short preDet, int threadCount, double& totalTime, double milli);
 
-void ImportCSV();
-void ExportCSV();
+void ImportCSV(Results* res);
+void ExportCSV(Results* res);
 
 int UserChoose(int floor, int ceil);
 Results* BingoSelect();
@@ -114,11 +114,11 @@ int main() {
         auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(duration);
         double milliTime = milliseconds.count();
         threads.clear();
-        
-        results->Clear();
+
         for (int i = 0; i < threadCount; i++) {
             for (int j = 0; j < 75; j++) {
                 results->AddMultiple(j, threadResults[i]->WinCount(j));
+                threadResults[i]->Clear();
             }
         }
 
@@ -220,13 +220,23 @@ void PrintResults(Results* results, short preDet, int threadCount, double& total
 }
 
 // Import from values.csv
-void ImportCSV() {
+void ImportCSV(Results* res) {
 
 }
 
 // Export to values.csv
-void ExportCSV() {
-
+void ExportCSV(Results* res) {
+    std::ofstream out;
+    out.open("values.csv");
+    if (!out.is_open()) {
+        std::cout << "Failed to open values.csv" << '\n';
+        return;
+    }
+    for (int i = 0; i < 75; i++) {
+        out << i + 1 << ',' << res->WinCount(i) << ',' << res->WinChance(i) << '\n';
+    }
+    out << res->Count();
+    out.close();
 }
 
 // ensure proper user input, return 0 else
