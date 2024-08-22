@@ -48,7 +48,7 @@ int main() {
 
     std::cout << "Would you like to input from input.csv?\n"
               << "1. Yes\n"
-              << "!= 1. No" << std::endl;
+              << "2. No" << std::endl;
     int input = UserChoose();
     if (input == 1) {
 
@@ -173,39 +173,24 @@ void BingoThread        (Results* results, std::atomic<bool>& running, bool free
 
 // Output results
 void PrintResults(Results* results, short preDet, int threadCount, double& totalTime, double milli) {
+    double aggregateChance = 0;
     std::cout << '\n';
 	for (int i = 0; i < 75; i++) {
         // how many times it won in that many moves (display i + 1)
         if (i < 9) {
             std::cout << ' '; // make them even
         }
-
-
-        // TODO : print out aggregate probability next to the values
-		std::cout << i + 1 << " calls happened ";
+		std::cout << i + 1 << "  calls happened  ";
 		std::cout << std::setw(16) << std::right << results->WinCount(i);
         // total chance 
-		std::cout << " times with a chance of ";
+		std::cout << "  times with a chance of  ";
 		std::cout << std::setw(11) << std::right << results->WinChance(i) * 100 << "%";
-        
-        // TODO
-        std::cout << '\n';
+        aggregateChance += results->WinChance(i);
+        std::cout << "  and aggregate chance so far of  ";
+        std::cout << std::setw(11) << std::right << aggregateChance * 100 << "%" << '\n';
 	}
     std::cout << "Total Games: " << results->Count() << '\n';
     std::cout << "Calculations done using: " << threadCount << " threads" << '\n';
-
-    if (preDet > 0) {
-        int value = preDet;
-        if (preDet < 5) {
-            std::cout << "\nInput a value to get aggregate chance of that or below: \n";
-            value = UserChoose();
-        }
-        double aggregate = 0;
-        for (int i = 0; i < value; i++) {
-            aggregate += results->WinChance(i);
-        }
-        std::cout << "Chance of Bingo in <= " << value << " moves: " << aggregate * 100 << "%" << std::endl;
-    }
 
     totalTime += milli;
     double totalSeconds = totalTime / 1000;
@@ -233,11 +218,16 @@ void ExportCSV() {
 
 }
 
+// TODO: add constraints to userChoose
+
 // ensure proper user input, return 0 else
 int UserChoose() {
     std::string userInput;
     std::cin >> userInput;
         try {
+            if (true) {
+                // constraints thing
+            }
             return stoi(userInput);
         } 
         catch (...) {
