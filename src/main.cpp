@@ -129,18 +129,26 @@ int main() {
         PrintResults(results, 45, threadCount, totalTimeTaken, milliTime);
 
         int choice;
-        std::cout << "Input 0 to quit, -1 to continue, "
-                  << "-2 to output, or other to change thread count" << std::endl;
-        choice = UserChoose(-2, 256);
-        if (choice == 0) {
-            break;
+        while (true) {
+            std::cout << "Input 0 to quit, -1 to continue, "
+                      << "-2 to output, or other to change thread count" << std::endl;
+            choice = UserChoose(-2, 256);
+            if (choice == 0) {
+                break;
+            }
+            else if (choice == -2) {
+                ExportCSV(results, totalTimeTaken);
+            }
+            else if (choice >= 1) {
+                threadCount = choice;
+            }
+            
+            // if export is selected, repeat menu
+            if (choice != -2) {
+                break;
+            }
         }
-        else if (choice == -2) {
-            ExportCSV(results, totalTimeTaken);
-        }
-        else if (choice >= 1) {
-            threadCount = choice;
-        }
+
     }
     for (int i = 0; i < threadCount; i++) {
         delete threadResults[i];
@@ -247,6 +255,7 @@ void ImportCSV(Results* res, double& totalTime) {
     std::getline(in, value, '\n');
     // yeah unsafe again just dont mess with the csv for right now
     totalTime += stod(value);
+    std::cout << "Data Imported from values.csv" << std::endl;
     in.close();
 }
 
@@ -263,6 +272,7 @@ void ExportCSV(Results* res, double& totalTime) {
     }
     out << res->Count() << '\n';
     out << totalTime << '\n';
+    std::cout << "Data Exported to values.csv" << std::endl;
     out.close();
 }
 
