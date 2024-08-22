@@ -5,6 +5,7 @@ main.obj
 main.pdb
 program.exe
 src/randomtempbackup.txt
+values.csv
 vc140.pdb
 .vscode/launch.json
 .vscode/settings.json

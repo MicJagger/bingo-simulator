@@ -11,8 +11,12 @@ void BingoThread        (Results* results, std::atomic<bool>& running, bool free
                          std::vector<unsigned int>& seeds, bool changeCall);
 void PrintResults(Results* results, short preDet, int threadCount, double& totalTime, double milli);
 
-void ImportCSV(Results* res);
-void ExportCSV(Results* res);
+// Import / Export
+
+void ImportCSV(Results* res, double& timeTaken);
+void ExportCSV(Results* res, double& timeTaken);
+
+// Helper Functions
 
 int UserChoose(int floor, int ceil);
 Results* BingoSelect();
@@ -20,11 +24,13 @@ bool FreeSpaceSelect();
 unsigned int ThreadCount();
 
 int main() {
-
     // if on windows for windows-based stuff such as time, does almost nothing currently
     bool onWindows = true;
     // display time info
     bool timeData = true;
+
+    // total time in milliseconds
+    double totalTimeTaken = 0;
 
     bool runTests = false;
     if (runTests) {
@@ -51,7 +57,7 @@ int main() {
               << "2. No" << std::endl;
     int input = UserChoose(1, 2);
     if (input == 1) {
-
+        ImportCSV(results, totalTimeTaken);
     }
 
     // divides 2^64 by threadCount to get ~equally spaced starting values
@@ -79,13 +85,11 @@ int main() {
         seeds.push_back(seedStarts);
     }
 
-    double totalTimeTaken = 0;
-
     // main loop
     while (true) {
         running = true;
         std::cout << "\nRunning bingo simulations\n";
-        // timer - WINDOWS-BASED, WILL UPDATE FOR UNIX MAYBE EVENTUALLY
+        // timer - WINDOWS-BASED, WILL UPDATE FOR UNIX MAYBE EVENTUALLY (I love Unix/Linux I'm sorry :( )
         auto start = std::chrono::high_resolution_clock::now();
         
         if (results->Type() == "Crossout") {
@@ -104,7 +108,7 @@ int main() {
         std::cout << "Input to pause" << std::endl;
         std::cin >> returnWait;
         running = false;
-        // timer - WINDOWS-BASED, WILL UPDATE FOR UNIX MAYBE EVENTUALLY
+        // timer - WINDOWS-BASED AGAIN
         auto end = std::chrono::high_resolution_clock::now();
 
         for (int i = 0; i < threadCount; i++) {
@@ -118,8 +122,8 @@ int main() {
         for (int i = 0; i < threadCount; i++) {
             for (int j = 0; j < 75; j++) {
                 results->AddMultiple(j, threadResults[i]->WinCount(j));
-                threadResults[i]->Clear();
             }
+            threadResults[i]->Clear();
         }
 
         PrintResults(results, 45, threadCount, totalTimeTaken, milliTime);
@@ -132,7 +136,7 @@ int main() {
             break;
         }
         else if (choice == -2) {
-            
+            ExportCSV(results, totalTimeTaken);
         }
         else if (choice >= 1) {
             threadCount = choice;
@@ -219,13 +223,35 @@ void PrintResults(Results* results, short preDet, int threadCount, double& total
     std::cout << "Average cards per hour per thread:   " << (count / totalHours) / threadCount   << " cards\n";
 }
 
-// Import from values.csv
-void ImportCSV(Results* res) {
+// Import / Export
 
+// Import from values.csv
+void ImportCSV(Results* res, double& totalTime) {
+    std::ifstream in;
+    in.open("values.csv");
+    if (!in.is_open()) {
+        std::cout << "Failed to open values.csv" << '\n';
+        return;
+    }
+    std::string value;
+    //std::cout << "starting loop" << '\n';
+    for (int i = 0; i < 75; i++) {
+        std::getline(in, value, ',');
+        std::getline(in, value, ',');
+        // this is unsafe if the user tampered with the .csv
+        res->AddMultiple(i, stoi(value));
+        //std::cout << i << " and " << value << '\n';
+        std::getline(in, value, '\n');
+    }
+    std::getline(in, value, '\n');
+    std::getline(in, value, '\n');
+    // yeah unsafe again just dont mess with the csv for right now
+    totalTime += stod(value);
+    in.close();
 }
 
 // Export to values.csv
-void ExportCSV(Results* res) {
+void ExportCSV(Results* res, double& totalTime) {
     std::ofstream out;
     out.open("values.csv");
     if (!out.is_open()) {
@@ -235,9 +261,12 @@ void ExportCSV(Results* res) {
     for (int i = 0; i < 75; i++) {
         out << i + 1 << ',' << res->WinCount(i) << ',' << res->WinChance(i) << '\n';
     }
-    out << res->Count();
+    out << res->Count() << '\n';
+    out << totalTime << '\n';
     out.close();
 }
+
+// Helper Functions
 
 // ensure proper user input, return 0 else
 int UserChoose(int floor, int ceil) {
