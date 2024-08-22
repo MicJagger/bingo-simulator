@@ -169,6 +169,7 @@ void BingoThread        (Results* results, std::atomic<bool>& running, bool free
 // Output results
 void PrintResults(Results* results, short preDet, int threadCount, double& totalTime, double milli) {
     double aggregateChance = 0;
+    double cardChance;
     std::cout << '\n';
 	for (int i = 0; i < 75; i++) {
         // how many times it won in that many moves (display i + 1)
@@ -177,13 +178,27 @@ void PrintResults(Results* results, short preDet, int threadCount, double& total
         }
 		std::cout << i + 1 << "  calls happened  ";
 		std::cout << std::setw(16) << std::right << results->WinCount(i);
+        
         // chance 
 		std::cout << "  times with a chance of  ";
 		std::cout << std::setw(11) << std::right << results->WinChance(i) * 100 << "%";
+        
+        // 1 in how many cards
+        cardChance = 1 / results->WinChance(i);
+        std::cout << "  or 1 in  ";
+        std::cout << std::setw(11) << std::right << cardChance << "  cards";
+        
         // aggregate chance
         aggregateChance += results->WinChance(i);
         std::cout << "  and aggregate chance so far of  ";
-        std::cout << std::setw(11) << std::right << aggregateChance * 100 << "%" << '\n';
+        std::cout << std::setw(11) << std::right << aggregateChance * 100 << "%";
+        
+        // 1 in how many cards
+        cardChance = 1 / aggregateChance;
+        std::cout << "  or 1 in  ";
+        std::cout << std::setw(11) << std::right << cardChance << "  cards";
+        
+        std::cout << '\n';
 	}
     std::cout << "Total Games: " << results->Count() << '\n';
     std::cout << "Calculations done using: " << threadCount << " threads" << '\n';
