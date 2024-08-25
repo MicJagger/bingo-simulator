@@ -1,7 +1,6 @@
 #include "stdincludes.hpp"
 
 #include "bingocard.hpp"
-#include "highrandom.hpp"
 #include "results.hpp"
 #include "tests.cpp"
 

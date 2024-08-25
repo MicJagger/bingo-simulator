@@ -4,8 +4,6 @@
 
 #include "stdincludes.hpp"
 
-#include "highrandom.hpp"
-
 // individual card
 class BingoCard {
     short values[25];
