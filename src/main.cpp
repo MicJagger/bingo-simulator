@@ -59,11 +59,8 @@ int main() {
         ImportCSV(results, totalTimeTaken);
     }
 
-    // divides 2^64 by threadCount to get ~equally spaced starting values
-    //unsigned long long index = round(((double)0x8000000000000000 / (double)threadCount) * 2);
-
-    // divides 2^32 by threadcount to get ~equally spaced starting seeds
-    unsigned int index = round(((double)0x100000000 / (double)threadCount));
+    // divides 2^31 by threadcount to get ~equally spaced starting seeds
+    unsigned int index = round(((double)0x80000000 / (double)threadCount));
 
     std::vector<std::thread> threads; // function threads
     std::vector<Results*> threadResults; // individual counters

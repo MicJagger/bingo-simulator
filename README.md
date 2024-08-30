@@ -11,7 +11,7 @@ It is able to run on a variable number of threads and is not based on OS-depende
 
 ## Running the project:
 Included is a makefile, readme (obviously), and src folder with source code
-1. Ensure you have MinGW32 / G++ installed
+1. Ensure you have GCC (g++) / MingW32 (Windows) installed
 2. Navigate to the folder in your terminal of choice
 3. Run ```MinGW32-make``` if on Windows (I will update this as I test Unix-based, I have had inconsistencies)
 4. Enjoy
@@ -21,3 +21,5 @@ It is optimal to spawn as many threads as your processor has.
 Nearly as optimal is to simply put as many cores, however all current AMD and Intel processors have hyperthreading that can get a bit more performance out of the same number of cores.
 
 If you are unaware of what you have (and are on Windows), just check task manager -> performance -> CPU and put in the number of Logical Processors your chip has.
+
+## Basic Rundown
