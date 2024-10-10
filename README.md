@@ -13,7 +13,7 @@ It is able to run on a variable number of threads and is not based on OS-depende
 Included is a makefile, readme (obviously), and src folder with source code
 1. Ensure you have GCC (g++) / MingW32 (Windows) installed
 2. Navigate to the folder in your terminal of choice
-3. Run ```MinGW32-make``` if on Windows (I will update this as I test Unix-based, I have had inconsistencies)
+3. Run ```make br(number)``` on Unix systems, or ```MinGW32-make br(number)w``` if on Windows
 4. Enjoy
 
 It is optimal to spawn as many threads as your processor has.
