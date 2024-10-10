@@ -144,6 +144,9 @@ int main() {
                 break;
             }
         }
+        if (choice == 0) {
+            break;
+        }
 
     }
     for (int i = 0; i < threadCount; i++) {
