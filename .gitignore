@@ -1,8 +1,11 @@
+*.csv
+bingo-simulator
 bingo-simulator.exe
 main.exe
 main.ilk
 main.obj
 main.pdb
+program
 program.exe
 src/randomtempbackup.txt
 values.csv
