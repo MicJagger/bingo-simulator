@@ -1,4 +1,4 @@
-# Bingo-Simulator
+# bingo-simulator
 Bingo Simulator for real-world testing
 
 The inspiration for this project comes from being on a Disney cruise.
@@ -10,7 +10,8 @@ This project is entirely in C++, and is primarily meant to emulate creating rand
 It is able to run on a variable number of threads and is not based on OS-dependent time for random number generation.
 
 ## Running the project:
-Included is a makefile, readme (obviously), and src folder with source code
+Included is a makefile, readme (obviously), and src folder with source code \
+There is nothing unusual, here it is anyway:
 1. Ensure you have GCC (g++) / MingW32 (Windows) installed
 2. Navigate to the folder in your terminal of choice
 3. Run ```make br(number)``` on Unix systems, or ```MinGW32-make br(number)w``` if on Windows
