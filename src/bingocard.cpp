@@ -39,16 +39,6 @@ void BingoCard::Setup(bool freeSpace, std::vector<unsigned int>& seeds, bool cha
         values[i] = tempVals[3 * i];
     }
 
-    /*
-    std::cout << seeds[0] - 1 << " " << seeds[1] << " " << seeds[2] << " " 
-              << seeds[3]     << " " << seeds[4] << " " << seeds[5] << " "<< '\n';
-    for (int i = 0; i < 75; i++) { std::cout << tempVals[i] << ' '; }
-    std::cout << '\n';
-    for (int i = 0; i < 25; i++) { std::cout << values[i] << ' '; }
-    std::cout << '\n';
-    for (int i = 0; i < 75; i++) { std::cout << callOrder[i] << ' '; }  
-    std::cout << '\n' << std::endl; //*/
-
     // change seeds
     seeds[1] += 3581;
     seeds[2] += 4421;
@@ -69,12 +59,6 @@ short BingoCard::PlayBingoCrossout() {
         if (CheckCrossout()) {
             return index - 1;
             // if reached 75, return 74 to wins[74]++
-
-            // im not sure why doing index + something doesnt cause undefined
-            // if its extreme is causes crashing or clearly off data, but when it's
-            // say + 0, then it just causes the percents to be a bit higher at the top
-            // to be honest, i am COMPLETELY LOST on why that happens
-            // probably compiler issue / quirk idk
         }
         Place(callOrder[index]);
         index++;

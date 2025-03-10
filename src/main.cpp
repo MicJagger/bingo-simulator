@@ -23,8 +23,6 @@ bool FreeSpaceSelect();
 unsigned int ThreadCount();
 
 int main() {
-    // if on windows for windows-based stuff such as time, does almost nothing currently
-    bool onWindows = true;
     // display time info
     bool timeData = true;
 
@@ -85,7 +83,6 @@ int main() {
     while (true) {
         running = true;
         std::cout << "\nRunning bingo simulations\n";
-        // timer - WINDOWS-BASED, WILL UPDATE FOR UNIX MAYBE EVENTUALLY (I love Unix/Linux I'm sorry :( )
         auto start = std::chrono::high_resolution_clock::now();
         
         if (results->Type() == "Crossout") {
@@ -104,7 +101,6 @@ int main() {
         std::cout << "Input to pause" << std::endl;
         std::cin >> returnWait;
         running = false;
-        // timer - WINDOWS-BASED AGAIN
         auto end = std::chrono::high_resolution_clock::now();
 
         for (int i = 0; i < threadCount; i++) {
